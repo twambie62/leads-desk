@@ -4,10 +4,290 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  SALES_AGENT
+  TRAINER
+}
+
+enum LeadSource {
+  FACEBOOK
+  WHATSAPP
+  REFERRAL
+  WEBSITE
+  PHYSICAL
+  OTHER
+}
+
+enum LeadStatus {
+  NEW_LEAD
+  CONTACTED
+  QUALIFIED
+  MEETING_SCHEDULED
+  PROPOSAL_DEMO
+  WON
+  TRAINING
+  CUSTOMER
+  DISQUALIFIED
+  LOST
+  NO_RESPONSE
+}
+
+enum ActivityType {
+  PHONE_CALL
+  WHATSAPP
+  GOOGLE_MEET
+  PHYSICAL_MEETING
+  DEMO
+  FOLLOW_UP
+}
+
+enum PaymentStatus {
+  PENDING
+  PARTIAL
+  PAID
+  REFUNDED
+}
+
+enum TrainingStatus {
+  PENDING
+  SCHEDULED
+  COMPLETED
+}
+
+enum NotificationType {
+  FOLLOW_UP_DUE
+  FOLLOW_UP_OVERDUE
+  MEETING_SCHEDULED
+  TRAINING_SCHEDULED
+}
+
+enum AuditAction {
+  CREATED
+  UPDATED
+  STATUS_CHANGED
+  ASSIGNED
+  DELETED
+  LOGIN
+  LOGIN_FAILED
+  LOCKED
+}
+
+// =========================================
+// USERS / AUTH
+// =========================================
+
+model User {
+  id                  String    @id @default(cuid())
+  name                String
+  email               String    @unique
+  passwordHash        String
+  role                Role      @default(SALES_AGENT)
+
+  // auth / lockout controls (per assignment: 5 failed attempts -> 24h lock)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  isActive            Boolean   @default(true)
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // relations
+  leadsAssigned       Lead[]          @relation("AssignedAgent")
+  leadsCreated        Lead[]          @relation("CreatedBy")
+  activities          LeadActivity[]
+  sales               Sale[]
+  trainingsGiven      Training[]      @relation("Trainer")
+  auditLogs           AuditLog[]
+  sessions            Session[]
+  notifications       Notification[]
+
+  @@index([role])
+}
+
+// tracks active login sessions -> lets you enforce "valid for 30 mins, revalidate after"
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash    String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+  ipAddress    String?
+  userAgent    String?
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// =========================================
+// LEADS
+// =========================================
+
+model Lead {
+  id                  String     @id @default(cuid())
+
+  // Stage 3 fields
+  leadName            String
+  businessName        String?
+  phoneNumber         String
+  whatsappNumber      String?
+  email               String?
+  location             String?
+  businessType        String?
+  productInterested   String?
+  source              LeadSource
+  status              LeadStatus @default(NEW_LEAD)
+
+  assignedAgentId     String?
+  assignedAgent       User?      @relation("AssignedAgent", fields: [assignedAgentId], references: [id])
+
+  createdById         String
+  createdBy           User       @relation("CreatedBy", fields: [createdById], references: [id])
+
+  // qualification (Section 5)
+  qualificationNote   String?
+  disqualifiedReason  String?
+
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  // relations
+  activities          LeadActivity[]
+  sale                Sale?
+  auditLogs           AuditLog[]
+  notifications       Notification[]
+
+  @@index([status])
+  @@index([source])
+  @@index([assignedAgentId])
+  @@index([createdAt])
+}
+
+// Section 6: Follow-up / Activities
+model LeadActivity {
+  id                String       @id @default(cuid())
+  leadId            String
+  lead              Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  agentId           String
+  agent             User         @relation(fields: [agentId], references: [id])
+
+  activityType      ActivityType
+  activityDate      DateTime
+  notes             String?
+  nextFollowUpDate  DateTime?
+
+  createdAt         DateTime     @default(now())
+
+  @@index([leadId])
+  @@index([nextFollowUpDate])
+}
+
+// =========================================
+// SALES / CONVERSION (Section 7)
+// =========================================
+
+model Sale {
+  id                    String        @id @default(cuid())
+  leadId                String        @unique
+  lead                  Lead          @relation(fields: [leadId], references: [id])
+
+  customerName          String
+  productPurchased      String
+  package               String?
+  amount                Decimal       @db.Decimal(12, 2)
+  paymentStatus         PaymentStatus @default(PENDING)
+  saleDate              DateTime      @default(now())
+
+  salesAgentId          String
+  salesAgent            User          @relation(fields: [salesAgentId], references: [id])
+
+  expectedTrainingDate  DateTime?
+
+  createdAt             DateTime      @default(now())
+  updatedAt              DateTime     @updatedAt
+
+  training               Training?
+
+  @@index([saleDate])
+}
+
+// =========================================
+// TRAINING (Section 8)
+// =========================================
+
+model Training {
+  id             String         @id @default(cuid())
+  saleId         String         @unique
+  sale           Sale           @relation(fields: [saleId], references: [id])
+
+  trainerId      String?
+  trainer        User?          @relation("Trainer", fields: [trainerId], references: [id])
+
+  trainingDate   DateTime?
+  status         TrainingStatus @default(PENDING)
+  notes          String?
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([status])
+}
+
+// =========================================
+// NOTIFICATIONS (Section 11)
+// =========================================
+
+model Notification {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+
+  leadId    String?
+  lead      Lead?             @relation(fields: [leadId], references: [id])
+
+  type      NotificationType
+  message   String
+  isRead    Boolean           @default(false)
+
+  createdAt DateTime          @default(now())
+
+  @@index([userId, isRead])
+}
+
+// =========================================
+// AUDIT / ACTIVITY LOG (your added requirement)
+// Generic history of everything that happens in the system:
+// lead created, lead updated, status changed, assigned, logins, etc.
+// =========================================
+
+model AuditLog {
+  id         String      @id @default(cuid())
+
+  action     AuditAction
+  message    String      // simple human-readable description, e.g. "Status changed from NEW_LEAD to CONTACTED"
+
+  userId     String?     // who did it (nullable in case of system actions)
+  user       User?       @relation(fields: [userId], references: [id])
+
+  leadId     String?     // optional link back to the lead this concerns
+  lead       Lead?       @relation(fields: [leadId], references: [id])
+
+  metadata   Json?       // optional structured before/after values if you want them later
+
+  createdAt  DateTime    @default(now())
+
+  @@index([leadId])
+  @@index([userId])
+  @@index([createdAt])
 }
