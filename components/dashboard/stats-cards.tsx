@@ -58,7 +58,7 @@ export function StatsCards({ data }: { data: StatRow[] }) {
           const current = period === "week" ? row.thisWeek : row.thisMonth;
           const previous = period === "week" ? row.lastWeek : row.lastMonth;
           return (
-            <Card key={row.status}>
+            <Card className="border-0 shadow-none" key={row.status}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {LABELS[row.status] ?? row.status}

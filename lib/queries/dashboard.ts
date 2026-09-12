@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { LeadStatus, LeadSource } from "@/generated/prisma";
+import { LeadStatus, LeadSource } from "@/src/generated/prisma";
 import {
   startOfWeek, subWeeks, startOfMonth, subMonths,
   startOfDay, subDays, format, eachDayOfInterval,
@@ -46,13 +46,13 @@ export async function getStatsCardsData() {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  NEW_LEAD: "var(--chart-1)",
-  CONTACTED: "var(--chart-2)",
-  QUALIFIED: "var(--chart-3)",
-  MEETING_SCHEDULED: "var(--chart-4)",
-  DISQUALIFIED: "var(--chart-5)",
-  LOST: "var(--chart-5)",
-  NO_RESPONSE: "var(--chart-5)",
+  NEW_LEAD: "hsl(var(--chart-1))",
+  CONTACTED: "hsl(var(--chart-2))",
+  QUALIFIED: "hsl(var(--chart-3))",
+  MEETING_SCHEDULED: "hsl(var(--chart-4))",
+  DISQUALIFIED: "hsl(var(--chart-5))",
+  LOST: "hsl(var(--chart-5))",
+  NO_RESPONSE: "hsl(var(--chart-5))",
 };
 
 const ALL_STATUSES: LeadStatus[] = [

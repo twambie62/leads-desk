@@ -4,7 +4,13 @@ import { Pie, PieChart, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
-const COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "#94a3b8"];
+const COLORS = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+  "#94a3b8"];
 
 const LABELS: Record<string, string> = {
   FACEBOOK: "Facebook", WHATSAPP: "WhatsApp", REFERRAL: "Referral",
@@ -22,7 +28,7 @@ export function SourceChart({ data }: { data: { source: string; count: number; p
         <CardTitle>Leads by Source</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="mx-auto h-[320px] max-h-[320px]">
+        <ChartContainer config={chartConfig} className="mx-auto w-[300px] h-[320px] max-h-[320px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent nameKey="source" />} />
             <Pie data={data} dataKey="count" nameKey="source" innerRadius={60} strokeWidth={4}>

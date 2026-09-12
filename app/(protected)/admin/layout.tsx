@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
-import {SidebarProvider} from "@/components/ui/sidebar";
-import {AppSidebar} from "@/components/dashboard/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/dashboard/app-sidebar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getSession();
@@ -9,8 +9,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className="flex-1 bg-muted/40">{children}</main>
+      <AppSidebar user={user} />
+      <main className="flex flex-1 flex-col bg-muted/40">{children}</main>
     </SidebarProvider>
   );
 }

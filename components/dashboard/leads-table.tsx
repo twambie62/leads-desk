@@ -9,6 +9,7 @@ import {
   PaginationNext, PaginationPrevious,
 } from "@/components/ui/pagination";
 import { getPaginatedLeads } from "@/lib/queries/dashboard";
+import {Users} from "lucide-react";
 
 const STATUS_VARIANT: Record<string, string> = {
   NEW_LEAD: "bg-blue-100 text-blue-700",
@@ -31,36 +32,41 @@ export async function LeadsTable({ page }: { page: number }) {
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-muted/50 hover:bg-muted/50">
               <TableHead>Lead Name</TableHead>
               <TableHead>Business</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Source</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Assigned To</TableHead>
-              <TableHead>Created</TableHead>
+              <TableHead className="text-right">Created</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {leads.map((lead) => (
-              <TableRow key={lead.id}>
+              <TableRow key={lead.id} className="hover:bg-muted/30">
                 <TableCell className="font-medium">{lead.leadName}</TableCell>
-                <TableCell>{lead.businessName ?? "—"}</TableCell>
+                <TableCell className="text-muted-foreground">{lead.businessName ?? "—"}</TableCell>
                 <TableCell>{lead.phoneNumber}</TableCell>
-                <TableCell>{lead.source}</TableCell>
+                <TableCell className="text-muted-foreground">{lead.source}</TableCell>
                 <TableCell>
-                  <Badge className={STATUS_VARIANT[lead.status] ?? ""} variant="secondary">
+                  <Badge className={`${STATUS_VARIANT[lead.status] ?? ""} border-0 font-medium`} variant="secondary">
                     {lead.status.replaceAll("_", " ")}
                   </Badge>
                 </TableCell>
-                <TableCell>{lead.assignedAgent?.name ?? "Unassigned"}</TableCell>
-                <TableCell>{lead.createdAt.toLocaleDateString()}</TableCell>
+                <TableCell className="text-muted-foreground">{lead.assignedAgent?.name ?? "Unassigned"}</TableCell>
+                <TableCell className="text-right text-muted-foreground">
+                  {lead.createdAt.toLocaleDateString()}
+                </TableCell>
               </TableRow>
             ))}
             {leads.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
-                  No leads yet.
+                <TableCell colSpan={7} className="h-40 text-center">
+                  <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                    <Users className="h-8 w-8" />
+                    <p className="text-sm">No leads yet — click (Add Lead) to create your first one.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

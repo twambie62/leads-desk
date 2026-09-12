@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import {Bar, BarChart, CartesianGrid, XAxis, YAxis} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -41,24 +41,37 @@ export function StatusChart({
         <CardTitle>Lead Status Over Time</CardTitle>
         <Tabs value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
           <TabsList>
-            <TabsTrigger value="daily">Daily</TabsTrigger>
-            <TabsTrigger value="weekly">Weekly</TabsTrigger>
-            <TabsTrigger value="monthly">Monthly</TabsTrigger>
+            <TabsTrigger
+              value="daily"
+            >Daily</TabsTrigger>
+            <TabsTrigger
+              value="weekly"
+            >Weekly</TabsTrigger>
+            <TabsTrigger
+              value="monthly"
+            >Monthly</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[320px] w-full">
-          <BarChart data={data}>
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="period" tickLine={false} axisLine={false} tickMargin={8} />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            {statuses.map((s) => (
-              <Bar key={s} dataKey={s} stackId="a" fill={statusColors[s]} radius={[0, 0, 0, 0]} />
-            ))}
-          </BarChart>
-        </ChartContainer>
+        <div className="overflow-x-auto">
+          <ChartContainer
+            config={chartConfig}
+            className="h-[320px]"
+            style={{ minWidth: `${data.length * 60}px` }} // ~60px per bar group, tune to taste
+          >
+            <BarChart data={data}>
+              <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeDasharray="4 3" />
+              <XAxis dataKey="period" tickLine={false} axisLine={false} tickMargin={8} />
+              <YAxis tickLine={false} axisLine={false} tickMargin={8} allowDecimals={false} width={32} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <ChartLegend content={<ChartLegendContent />} />
+              {statuses.map((s) => (
+                <Bar key={s} dataKey={s} stackId="a" fill={statusColors[s]} radius={[0, 0, 0, 0]} />
+              ))}
+            </BarChart>
+          </ChartContainer>
+        </div>
       </CardContent>
     </Card>
   );
