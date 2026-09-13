@@ -5,7 +5,7 @@ import { StatusChart } from "@/components/dashboard/status-chart";
 import { LeadsTable } from "@/components/dashboard/leads-table";
 import { TodaysFollowUps } from "@/components/dashboard/todays-followups";
 import {
-  getStatsCardsData, getStatusChartData, getPaginatedLeads, getTodaysFollowUps,
+  getStatsCardsData, getStatusChartData, getPaginatedLeads, getTodaysFollowUps, getFilteredLeads,
 } from "@/lib/queries/dashboard";
 import {SidebarProvider} from "@/components/ui/sidebar";
 
@@ -16,7 +16,7 @@ export default async function AgentDashboardPage() {
   const [stats, statusChart, initialLeads, followUps] = await Promise.all([
     getStatsCardsData(user.id),
     getStatusChartData(user.id),
-    getPaginatedLeads(1, user.id),
+    getFilteredLeads({ page: 1, pageSize: 10, agentId: user.id }),
     getTodaysFollowUps(user.id),
   ]);
 
@@ -64,8 +64,7 @@ export default async function AgentDashboardPage() {
           <TodaysFollowUps followUps={followUps} />
         </div>
       </div>
-        <LeadsTable basePath="/agent" initialData={initialLeads} agents={[]} canDelete={true} lockedAgentId={user.id} />
-
+      <LeadsTable showOutOfLeads={false} initialData={initialLeads} agents={[]} canDelete={false} lockedAgentId={user.id} basePath="/agent" pageSize={10} showAgentFilter={false} />
     </div>
   </div>
 

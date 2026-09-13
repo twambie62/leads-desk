@@ -6,6 +6,8 @@ import {Button} from "@/components/ui/button";
 import {getLeadById, getSalesAgents,} from "@/lib/queries/dashboard";
 import {LeadStatusControl} from "@/components/dashboard/lead-status-control";
 import {LeadDetailsActions} from "@/components/dashboard/lead-details-actions";
+import { AddActivityDialog } from "@/components/dashboard/add-activity-dialog";
+import { QualificationNoteCard } from "@/components/dashboard/qualification-note-card";
 
 export default async function LeadDetailsPage({params,}: { params: Promise<{ id: string }>; }) {
   const {id} = await params;
@@ -19,8 +21,9 @@ export default async function LeadDetailsPage({params,}: { params: Promise<{ id:
     </Link> </Button> <LeadDetailsActions lead={lead} agents={agents}/></div>
     {/* Lead Details + Status */}
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3"> {/* Lead Information */} <Card className="lg:col-span-2">
-      <CardHeader> <CardTitle>{lead.leadName}</CardTitle> </CardHeader> <CardContent
-      className="grid grid-cols-2 gap-4 text-sm"> <Field label="Business Name" value={lead.businessName}/> <Field
+      <CardHeader> <CardTitle>{lead.leadName}</CardTitle>
+      </CardHeader>
+      <CardContent className="grid grid-cols-2 gap-4 text-sm"> <Field label="Business Name" value={lead.businessName}/> <Field
       label="Business Type" value={lead.businessType}/> <Field label="Phone Number" value={lead.phoneNumber}/> <Field
       label="Location" value={lead.location}/> <Field label="Product Interested" value={lead.productInterested}/> <Field
       label="Source" value={lead.source}/> <Field label="Created By" value={lead.createdBy?.name}/> <Field
@@ -38,7 +41,11 @@ export default async function LeadDetailsPage({params,}: { params: Promise<{ id:
       className="mt-4 text-sm text-muted-foreground"> Assigned to:{" "} <span
       className="font-medium text-foreground"> {lead.assignedAgent?.name ?? "Unassigned"} </span></p></CardContent>
     </Card></div>
-    {/* Activity Timeline */} <Card> <CardHeader> <CardTitle>Activity Timeline</CardTitle> </CardHeader>
+    {/* Activity Timeline */} <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Activity Timeline</CardTitle>
+        <AddActivityDialog leadId={lead.id} basePath="/admin" />  {/* "/agent" on the agent page */}
+      </CardHeader>
       <CardContent> {lead.activities.length === 0 ? (
         <p className="text-sm text-muted-foreground"> No activity logged yet. </p>) : (
         <ul className="space-y-3"> {lead.activities.map((activity) => (
@@ -46,7 +53,12 @@ export default async function LeadDetailsPage({params,}: { params: Promise<{ id:
             className="font-medium"> {activity.activityType.replaceAll("_", " ")} —{" "} {activity.agent.name} </p> <p
             className="text-muted-foreground"> {activity.notes} </p> <p
             className="text-xs text-muted-foreground"> {activity.activityDate.toLocaleString()} </p>
-          </li>))} </ul>)} </CardContent> </Card></div>);
+          </li>))} </ul>)} </CardContent>
+
+    </Card>
+    <QualificationNoteCard leadId={lead.id} basePath="/admin" currentNote={lead.qualificationNote} />
+
+  </div>);
 }
 
 function Field({label, value,}: { label: string; value?: string | null; }) {

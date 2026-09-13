@@ -13,6 +13,8 @@ import { getLeadById } from "@/lib/queries/dashboard";
 import { getSession } from "@/lib/session";
 import { LeadStatusControl } from "@/components/dashboard/lead-status-control";
 import { LeadDetailsActions } from "@/components/dashboard/lead-details-actions";
+import { AddActivityDialog } from "@/components/dashboard/add-activity-dialog";
+import { QualificationNoteCard } from "@/components/dashboard/qualification-note-card";
 
 export default async function AgentLeadDetailsPage({
   params,
@@ -114,6 +116,7 @@ className="text-primary hover:underline"
 </Card>
 
 {/* Status */}
+        <div className="flex flex-col gap-6">
 <Card className="min-w-0">
   <CardHeader>
     <CardTitle>Status</CardTitle>
@@ -135,12 +138,15 @@ className="text-primary hover:underline"
     )}
   </CardContent>
 </Card>
+        <QualificationNoteCard leadId={lead.id} basePath="/agent" currentNote={lead.qualificationNote} />
+        </div>
 </div>
 
 {/* Activity Timeline */}
 <Card className="min-w-0">
-  <CardHeader>
+  <CardHeader className="flex flex-row items-center justify-between">
     <CardTitle>Activity Timeline</CardTitle>
+    <AddActivityDialog leadId={lead.id} basePath="/agent" />  {/* "/agent" on the agent page */}
   </CardHeader>
 
   <CardContent>

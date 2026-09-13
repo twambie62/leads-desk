@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { LeadStatus, LeadSource } from "@/src/generated/prisma";
+import { Prisma,LeadStatus, LeadSource } from "@/src/generated/prisma";
 import {
   startOfWeek, subWeeks, startOfMonth, subMonths,
   startOfDay, subDays, format, eachDayOfInterval,
@@ -187,4 +187,80 @@ export async function getTodaysFollowUps(agentId?: string) {
     result.push(activity);
   }
   return result;
+}
+
+export async function getSecondaryStatsData(agentId?: string) {
+  const scope = agentId ? { assignedAgentId: agentId } : {};
+  const [total, disqualified, lost, noResponse] = await Promise.all([
+    prisma.lead.count({ where: { deletedAt: null, ...scope } }),
+    prisma.lead.count({ where: { deletedAt: null, ...scope, status: "DISQUALIFIED" } }),
+    prisma.lead.count({ where: { deletedAt: null, ...scope, status: "LOST" } }),
+    prisma.lead.count({ where: { deletedAt: null, ...scope, status: "NO_RESPONSE" } }),
+  ]);
+  return { total, disqualified, lost, noResponse };
+}
+
+export type LeadFilters = {
+  page: number;
+  pageSize?: number;
+  agentId?: string; // forced scope — always wins over assignedAgentId below
+  status?: string;
+  source?: string;
+  assignedAgentId?: string; // "unassigned" sentinel handled specially
+  search?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: "createdAt" | "leadName";
+  sortDir?: "asc" | "desc";
+};
+
+export async function getFilteredLeads(filters: LeadFilters) {
+  const {
+    page, pageSize = 10, agentId, status, source, assignedAgentId,
+    search, dateFrom, dateTo, sortBy = "createdAt", sortDir = "desc",
+  } = filters;
+
+  const skip = (page - 1) * pageSize;
+  const where: Prisma.LeadWhereInput = { deletedAt: null };
+
+  if (agentId) {
+    where.assignedAgentId = agentId;
+  } else if (assignedAgentId === "unassigned") {
+    where.assignedAgentId = null;
+  } else if (assignedAgentId) {
+    where.assignedAgentId = assignedAgentId;
+  }
+
+  if (status) where.status = status as LeadStatus;
+  if (source) where.source = source as LeadSource;
+
+  if (search) {
+    where.OR = [
+      { leadName: { contains: search, mode: "insensitive" } },
+      { businessName: { contains: search, mode: "insensitive" } },
+      { phoneNumber: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  if (dateFrom || dateTo) {
+    where.createdAt = {
+      ...(dateFrom ? { gte: new Date(dateFrom) } : {}),
+      ...(dateTo ? { lte: new Date(new Date(dateTo).setHours(23, 59, 59, 999)) } : {}),
+    };
+  }
+
+  const [leads, totalCount] = await Promise.all([
+    prisma.lead.findMany({
+      where,
+      orderBy: { [sortBy]: sortDir },
+      skip,
+      take: pageSize,
+      include: { assignedAgent: { select: { id: true, name: true } } },
+    }),
+    prisma.lead.count({ where }),
+  ]);
+
+  return {
+    leads, totalCount, totalPages: Math.max(1, Math.ceil(totalCount / pageSize)), page, pageSize,
+  };
 }

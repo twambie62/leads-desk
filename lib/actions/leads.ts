@@ -19,6 +19,8 @@ const leadSchema = z.object({
 });
 
 export type CreateLeadState = { error?: string; success?: boolean };
+export type UpdateQualificationState = { error?: string; success?: boolean };
+
 
 export async function createLeadAction(_prevState: CreateLeadState, formData: FormData): Promise<CreateLeadState> {
   const user = await getSession();
@@ -157,5 +159,33 @@ export async function bulkSoftDeleteLeadsAction(leadIds: string[]): Promise<{ er
   });
 
   revalidatePath("/admin/dashboard");
+  return { success: true };
+}
+
+
+export async function updateQualificationNoteAction(
+  leadId: string,
+  basePath: string,
+  _prevState: UpdateQualificationState,
+  formData: FormData
+): Promise<UpdateQualificationState> {
+  const user = await getSession();
+  if (!user) return { error: "Not authenticated." };
+
+  const lead = await prisma.lead.findFirst({ where: { id: leadId, deletedAt: null } });
+  if (!lead) return { error: "Lead not found." };
+  if (user.role === "SALES_AGENT" && lead.assignedAgentId !== user.id) {
+    return { error: "You don't have permission to edit this lead." };
+  }
+
+  const note = (formData.get("qualificationNote") as string) ?? "";
+
+  await prisma.lead.update({ where: { id: leadId }, data: { qualificationNote: note || null } });
+
+  await prisma.auditLog.create({
+    data: { action: "UPDATED", message: `${user.name} updated the qualification note`, userId: user.id, leadId },
+  });
+
+  revalidatePath(`${basePath}/leads/${leadId}`);
   return { success: true };
 }

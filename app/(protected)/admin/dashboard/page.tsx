@@ -5,6 +5,7 @@ import { StatusChart } from "@/components/dashboard/status-chart";
 import {
   getStatsCardsData, getStatusChartData, getSourceChartData, getSalesAgents,
   getPaginatedLeads,
+  getFilteredLeads,
 } from "@/lib/queries/dashboard";
 import {DashboardHeader} from "@/components/dashboard/ dashboard-header";
 import {getSession} from "@/lib/session";
@@ -23,7 +24,7 @@ export default async function AdminDashboardPage({
     getStatusChartData(),
     getSourceChartData(),
     getSalesAgents(),
-    getPaginatedLeads(1)
+    getFilteredLeads({ page: 1, pageSize: 10 }),
 
   ]);
 
@@ -57,10 +58,8 @@ export default async function AdminDashboardPage({
             <SourceChart data={sourceChart} /> {/* or TodaysFollowUps on agent */}
           </div>
         </div>
-        <div className="w-full min-w-0">
-          <LeadsTable basePath="/admin" agents={agents} initialData={initialLeads} />
+          <LeadsTable showOutOfLeads={false} initialData={initialLeads} agents={agents} pageSize={10} />
 
-        </div>
       </div>
     </div>
   );
