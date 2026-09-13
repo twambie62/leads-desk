@@ -14,7 +14,15 @@ type Lead = {
   assignedAgentId: string | null;
 };
 
-export function LeadDetailsActions({ lead, agents }: { lead: Lead; agents: { id: string; name: string }[] }) {
+export function LeadDetailsActions({
+                                     lead, agents, canDelete = true, lockedAgentId, backHref = "/admin/dashboard",
+                                   }: {
+  lead: Lead;
+  agents: { id: string; name: string }[];
+  canDelete?: boolean;
+  lockedAgentId?: string;
+  backHref?: string;
+}) {
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -24,18 +32,22 @@ export function LeadDetailsActions({ lead, agents }: { lead: Lead; agents: { id:
       <Button variant="outline" size="sm" onClick={() => setEditOpen(true)} className="flex items-center gap-1">
         <Pencil className="h-4 w-4" /> Edit
       </Button>
-      <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)} className="flex items-center gap-1">
-        <Trash2 className="h-4 w-4" /> Delete
-      </Button>
+      {canDelete && (
+        <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)} className="flex items-center gap-1">
+          <Trash2 className="h-4 w-4" /> Delete
+        </Button>
+      )}
 
-      <EditLeadDialog open={editOpen} onOpenChange={setEditOpen} lead={lead} agents={agents} />
-      <DeleteLeadDialog
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        leadId={lead.id}
-        leadName={lead.leadName}
-        onDeleted={() => router.push("/admin/dashboard")}
-      />
+      <EditLeadDialog open={editOpen} onOpenChange={setEditOpen} lead={lead} agents={agents} lockedAgentId={lockedAgentId} />
+      {canDelete && (
+        <DeleteLeadDialog
+          open={deleteOpen}
+          onOpenChange={setDeleteOpen}
+          leadId={lead.id}
+          leadName={lead.leadName}
+          onDeleted={() => router.push(backHref)}
+        />
+      )}
     </div>
   );
 }

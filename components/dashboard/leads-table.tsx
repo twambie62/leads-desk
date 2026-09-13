@@ -43,11 +43,13 @@ type PaginatedResponse = { leads: LeadRow[]; totalPages: number; page: number };
 
 export function LeadsTable({
                              initialData, agents, canDelete = true, lockedAgentId,
+                             basePath = "/admin",
                            }: {
   initialData: PaginatedResponse;
   agents: { id: string; name: string }[];
   canDelete?: boolean;
   lockedAgentId?: string;
+  basePath?: string;
 }) {
 
 
@@ -130,7 +132,7 @@ export function LeadsTable({
                   <TableCell className="text-muted-foreground">{lead.assignedAgent?.name ?? "Unassigned"}</TableCell>
                   <TableCell className="text-right text-muted-foreground">{new Date(lead.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <LeadRowActions lead={lead} agents={agents} onChanged={refetchCurrentPage} canDelete={canDelete} lockedAgentId={lockedAgentId} />
+                    <LeadRowActions basePath={basePath} lead={lead} agents={agents} onChanged={refetchCurrentPage} canDelete={canDelete} lockedAgentId={lockedAgentId} />
                   </TableCell>
                 </TableRow>
               ))}

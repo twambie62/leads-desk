@@ -53,40 +53,40 @@ export function EditLeadDialog({
           <input type="hidden" name="assignedAgentId" value={assignedAgentId} />
 
           <div className="col-span-2">
-            <Label htmlFor="leadName">Lead Name *</Label>
-            <Input id="leadName" name="leadName" defaultValue={lead.leadName} required />
+            <Label  className="mb-2" htmlFor="leadName">Lead Name *</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="leadName" name="leadName" defaultValue={lead.leadName} required />
+          </div>
+          <div >
+            <Label className="mb-2 mt-0.5" htmlFor="businessName">Business Name</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="businessName" name="businessName" defaultValue={lead.businessName ?? ""} />
+          </div>
+          <div >
+            <Label className="mb-2 mt-0.5" htmlFor="businessType">Business Type</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="businessType" name="businessType" defaultValue={lead.businessType ?? ""} />
           </div>
           <div>
-            <Label htmlFor="businessName">Business Name</Label>
-            <Input id="businessName" name="businessName" defaultValue={lead.businessName ?? ""} />
+            <Label className="mb-2 mt-0.5" htmlFor="phoneNumber">Phone Number *</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="phoneNumber" name="phoneNumber" defaultValue={lead.phoneNumber} required />
           </div>
           <div>
-            <Label htmlFor="businessType">Business Type</Label>
-            <Input id="businessType" name="businessType" defaultValue={lead.businessType ?? ""} />
+            <Label className="mb-2 mt-0.5" htmlFor="whatsappNumber">WhatsApp Number</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="whatsappNumber" name="whatsappNumber" defaultValue={lead.whatsappNumber ?? ""} />
           </div>
           <div>
-            <Label htmlFor="phoneNumber">Phone Number *</Label>
-            <Input id="phoneNumber" name="phoneNumber" defaultValue={lead.phoneNumber} required />
+            <Label className="mb-2 mt-0.5" htmlFor="email">Email</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="email" name="email" type="email" defaultValue={lead.email ?? ""} />
           </div>
           <div>
-            <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
-            <Input id="whatsappNumber" name="whatsappNumber" defaultValue={lead.whatsappNumber ?? ""} />
+            <Label className="mb-2 mt-0.5" htmlFor="location">Location</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="location" name="location" defaultValue={lead.location ?? ""} />
+          </div>
+          <div >
+            <Label className="mb-2 mt-0.5" htmlFor="productInterested">Product Interested In</Label>
+            <Input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" id="productInterested" name="productInterested" defaultValue={lead.productInterested ?? ""} />
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" defaultValue={lead.email ?? ""} />
-          </div>
-          <div>
-            <Label htmlFor="location">Location</Label>
-            <Input id="location" name="location" defaultValue={lead.location ?? ""} />
-          </div>
-          <div className="col-span-2">
-            <Label htmlFor="productInterested">Product Interested In</Label>
-            <Input id="productInterested" name="productInterested" defaultValue={lead.productInterested ?? ""} />
-          </div>
-          <div>
-            <Label>Lead Source *</Label>
-            <Select value={source} onValueChange={setSource}>
+            <Label className="mb-2 mt-1">Lead Source *</Label>
+            <Select className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" value={source} onValueChange={setSource}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {["FACEBOOK", "WHATSAPP", "REFERRAL", "WEBSITE", "PHYSICAL", "OTHER"].map((s) => (
@@ -97,12 +97,12 @@ export function EditLeadDialog({
           </div>
           <div>
             {lockedAgentId ? (
-              <input type="hidden" name="assignedAgentId" value={lockedAgentId} />
+              <input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" type="hidden" name="assignedAgentId" value={lockedAgentId} />
             ) : (
               <div>
-                <Label>Assign To</Label>
-                <input type="hidden" name="assignedAgentId" value={assignedAgentId} />
-                <Select value={assignedAgentId} onValueChange={setAssignedAgentId}>
+                <Label className="mb-2 mt-0.5">Assign To</Label>
+                <input className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" type="hidden" name="assignedAgentId" value={assignedAgentId} />
+                <Select className="shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" value={assignedAgentId} onValueChange={setAssignedAgentId}>
                   <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
                   <SelectContent>
                     {agents.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}

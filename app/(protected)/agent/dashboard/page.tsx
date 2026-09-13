@@ -64,7 +64,7 @@ export default async function AgentDashboardPage() {
           <TodaysFollowUps followUps={followUps} />
         </div>
       </div>
-        <LeadsTable initialData={initialLeads} agents={[]} canDelete={false} lockedAgentId={user.id} />
+        <LeadsTable basePath="/agent" initialData={initialLeads} agents={[]} canDelete={true} lockedAgentId={user.id} />
 
     </div>
   </div>

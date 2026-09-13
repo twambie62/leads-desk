@@ -26,13 +26,14 @@ type Lead = {
 };
 
 export function LeadRowActions({
-                                 lead, agents, onChanged, canDelete = true, lockedAgentId,
+                                 lead, agents, onChanged, canDelete = true, lockedAgentId, basePath,
                                }: {
   lead: Lead;
   agents: { id: string; name: string }[];
   onChanged?: () => void;
   canDelete?: boolean;
   lockedAgentId?: string;
+  basePath?: string;
 }) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -47,7 +48,8 @@ export function LeadRowActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <Link href={`/admin/leads/${lead.id}`} className="flex items-center gap-2">
+            <Link href={`${basePath}/leads/${lead.id}`}
+                  className="flex items-center gap-2">
               <Eye className="h-4 w-4" /> View
             </Link>
           </DropdownMenuItem>

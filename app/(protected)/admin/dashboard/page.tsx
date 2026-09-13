@@ -58,7 +58,7 @@ export default async function AdminDashboardPage({
           </div>
         </div>
         <div className="w-full min-w-0">
-          <LeadsTable agents={agents} initialData={initialLeads} />
+          <LeadsTable basePath="/admin" agents={agents} initialData={initialLeads} />
 
         </div>
       </div>
