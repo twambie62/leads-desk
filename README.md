@@ -99,7 +99,7 @@ There is a single login page for both roles; the system routes each user to the 
 |---|---|---|
 | Admin | `admin@leadsdesk.com` | `Admin@2026` |
 | Sales Agent (if dummy seed was run) | `agent1@leadsdesk.com` through `agent8@leadsdesk.com` | `Agent@2026` |
-| Trainer (if dummy seed was run, dormant role) | `trainer@leadsdesk.com` | `Trainer@2026` |
+
 
 There is no account creation page — Admin is predefined via the seed script, and the Admin is responsible for creating all Sales Agent accounts through the dashboard.
 
