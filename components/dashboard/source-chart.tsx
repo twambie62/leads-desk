@@ -2,7 +2,10 @@
 
 import { Pie, PieChart, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import {
+  ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,
+  ChartLegend, ChartLegendContent,
+} from "@/components/ui/chart";
 
 const COLORS = [
   "hsl(var(--chart-1))",
@@ -28,12 +31,12 @@ export function SourceChart({ data }: { data: { source: string; count: number; p
         <CardTitle>Leads by Source</CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-1 items-center justify-center">
+      <CardContent className="flex flex-1 flex-col items-center justify-center gap-3">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square h-[280px] w-full max-w-[320px] sm:h-[320px]"
+          className="mx-auto -mt-8 -mb-4 aspect-square h-[280px] w-full max-w-[320px] sm:h-[320px]"
         >
-          <PieChart>
+          <PieChart >
             <ChartTooltip
               content={<ChartTooltipContent nameKey="source" />}
             />
@@ -52,8 +55,31 @@ export function SourceChart({ data }: { data: { source: string; count: number; p
                 />
               ))}
             </Pie>
+
+            {/*<ChartLegend content={<ChartLegendContent nameKey="source" />} />*/}
           </PieChart>
+
         </ChartContainer>
+        {/* Responsive Legend */}
+        <div className="flex w-full flex-wrap justify-center gap-x-4 gap-y-2 px-2">
+          {data.map((entry, i) => (
+            <div
+              key={entry.source}
+              className="flex items-center gap-2 text-sm"
+            >
+      <span
+        className="h-2 w-2 shrink-0 rounded-[2px]"
+        style={{
+          backgroundColor: COLORS[i % COLORS.length],
+        }}
+      />
+
+              <span  className="whitespace-nowrap text-xs ">
+        {LABELS[entry.source] ?? entry.source}
+      </span>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );
