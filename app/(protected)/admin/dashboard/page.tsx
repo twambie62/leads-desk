@@ -42,7 +42,7 @@ export default async function AdminDashboardPage({
           </div>
         </div>
 
-        <LeadsTable initialData={initialLeads} />
+        <LeadsTable agents={agents} initialData={initialLeads} />
       </div>
     </div>
   );

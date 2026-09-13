@@ -20,10 +20,10 @@ export async function getStatsCardsData() {
 
   const [allTime, thisWeek, lastWeek, thisMonth, lastMonth] = await Promise.all([
     prisma.lead.groupBy({ by: ["status"], _count: true }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { createdAt: { gte: weekStart } } }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { createdAt: { gte: lastWeekStart, lt: weekStart } } }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { createdAt: { gte: monthStart } } }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { createdAt: { gte: lastMonthStart, lt: monthStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null , createdAt: { gte: weekStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null ,createdAt: { gte: lastWeekStart, lt: weekStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null ,createdAt: { gte: monthStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null ,createdAt: { gte: lastMonthStart, lt: monthStart } } }),
   ]);
 
   const toMap = (rows: { status: LeadStatus; _count: number }[]) =>
@@ -63,7 +63,7 @@ const ALL_STATUSES: LeadStatus[] = [
 export async function getStatusChartData() {
   const rangeStart = subMonths(startOfDay(new Date()), 12);
   const leads = await prisma.lead.findMany({
-    where: { createdAt: { gte: rangeStart } },
+    where: {deletedAt: null , createdAt: { gte: rangeStart } },
     select: { createdAt: true, status: true },
   });
 
@@ -102,7 +102,7 @@ export async function getStatusChartData() {
 }
 
 export async function getSourceChartData() {
-  const rows = await prisma.lead.groupBy({ by: ["source"], _count: true });
+  const rows = await prisma.lead.groupBy({  by: ["source"],  _count: true, where: { deletedAt: null }, });
   const total = rows.reduce((sum, r) => sum + r._count, 0);
   return rows.map((r) => ({
     source: r.source,
@@ -118,6 +118,7 @@ export async function getPaginatedLeads(page: number) {
 
   const [leads, totalCount] = await Promise.all([
     prisma.lead.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
       skip,
       take: PAGE_SIZE,
@@ -125,7 +126,9 @@ export async function getPaginatedLeads(page: number) {
         assignedAgent: { select: { id: true, name: true } },
       },
     }),
-    prisma.lead.count(),
+    prisma.lead.count({
+      where: { deletedAt: null },
+    }),
   ]);
 
   return {
@@ -134,6 +137,25 @@ export async function getPaginatedLeads(page: number) {
     totalPages: Math.max(1, Math.ceil(totalCount / PAGE_SIZE)),
     page,
   };
+}
+
+export async function getLeadById(id: string) {
+  return prisma.lead.findFirst({
+    where: { id, deletedAt: null },
+    include: {
+      assignedAgent: { select: { id: true, name: true, email: true } },
+      createdBy: { select: { name: true } },
+      activities: {
+        orderBy: { activityDate: "desc" },
+        include: { agent: { select: { name: true } } },
+      },
+      auditLogs: {
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        include: { user: { select: { name: true } } },
+      },
+    },
+  });
 }
 
 export async function getSalesAgents() {

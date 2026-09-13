@@ -161,7 +161,8 @@ exports.Prisma.LeadScalarFieldEnum = {
   qualificationNote: 'qualificationNote',
   disqualifiedReason: 'disqualifiedReason',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 };
 
 exports.Prisma.LeadActivityScalarFieldEnum = {

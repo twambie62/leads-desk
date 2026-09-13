@@ -4303,6 +4303,7 @@ export namespace Prisma {
     disqualifiedReason: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type LeadMaxAggregateOutputType = {
@@ -4323,6 +4324,7 @@ export namespace Prisma {
     disqualifiedReason: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type LeadCountAggregateOutputType = {
@@ -4343,6 +4345,7 @@ export namespace Prisma {
     disqualifiedReason: number
     createdAt: number
     updatedAt: number
+    deletedAt: number
     _all: number
   }
 
@@ -4365,6 +4368,7 @@ export namespace Prisma {
     disqualifiedReason?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
   }
 
   export type LeadMaxAggregateInputType = {
@@ -4385,6 +4389,7 @@ export namespace Prisma {
     disqualifiedReason?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
   }
 
   export type LeadCountAggregateInputType = {
@@ -4405,6 +4410,7 @@ export namespace Prisma {
     disqualifiedReason?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     _all?: true
   }
 
@@ -4498,6 +4504,7 @@ export namespace Prisma {
     disqualifiedReason: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     _count: LeadCountAggregateOutputType | null
     _min: LeadMinAggregateOutputType | null
     _max: LeadMaxAggregateOutputType | null
@@ -4535,6 +4542,7 @@ export namespace Prisma {
     disqualifiedReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     assignedAgent?: boolean | Lead$assignedAgentArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     activities?: boolean | Lead$activitiesArgs<ExtArgs>
@@ -4562,6 +4570,7 @@ export namespace Prisma {
     disqualifiedReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     assignedAgent?: boolean | Lead$assignedAgentArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lead"]>
@@ -4584,6 +4593,7 @@ export namespace Prisma {
     disqualifiedReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     assignedAgent?: boolean | Lead$assignedAgentArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lead"]>
@@ -4606,9 +4616,10 @@ export namespace Prisma {
     disqualifiedReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
   }
 
-  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "leadName" | "businessName" | "phoneNumber" | "whatsappNumber" | "email" | "location" | "businessType" | "productInterested" | "source" | "status" | "assignedAgentId" | "createdById" | "qualificationNote" | "disqualifiedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["lead"]>
+  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "leadName" | "businessName" | "phoneNumber" | "whatsappNumber" | "email" | "location" | "businessType" | "productInterested" | "source" | "status" | "assignedAgentId" | "createdById" | "qualificationNote" | "disqualifiedReason" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["lead"]>
   export type LeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedAgent?: boolean | Lead$assignedAgentArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -4655,6 +4666,7 @@ export namespace Prisma {
       disqualifiedReason: string | null
       createdAt: Date
       updatedAt: Date
+      deletedAt: Date | null
     }, ExtArgs["result"]["lead"]>
     composites: {}
   }
@@ -5101,6 +5113,7 @@ export namespace Prisma {
     readonly disqualifiedReason: FieldRef<"Lead", 'String'>
     readonly createdAt: FieldRef<"Lead", 'DateTime'>
     readonly updatedAt: FieldRef<"Lead", 'DateTime'>
+    readonly deletedAt: FieldRef<"Lead", 'DateTime'>
   }
     
 
@@ -11396,7 +11409,8 @@ export namespace Prisma {
     qualificationNote: 'qualificationNote',
     disqualifiedReason: 'disqualifiedReason',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
   };
 
   export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
@@ -11920,6 +11934,7 @@ export namespace Prisma {
     disqualifiedReason?: StringNullableFilter<"Lead"> | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     assignedAgent?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     activities?: LeadActivityListRelationFilter
@@ -11946,6 +11961,7 @@ export namespace Prisma {
     disqualifiedReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     assignedAgent?: UserOrderByWithRelationInput
     createdBy?: UserOrderByWithRelationInput
     activities?: LeadActivityOrderByRelationAggregateInput
@@ -11975,6 +11991,7 @@ export namespace Prisma {
     disqualifiedReason?: StringNullableFilter<"Lead"> | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     assignedAgent?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     activities?: LeadActivityListRelationFilter
@@ -12001,6 +12018,7 @@ export namespace Prisma {
     disqualifiedReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     _count?: LeadCountOrderByAggregateInput
     _max?: LeadMaxOrderByAggregateInput
     _min?: LeadMinOrderByAggregateInput
@@ -12027,6 +12045,7 @@ export namespace Prisma {
     disqualifiedReason?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
   }
 
   export type LeadActivityWhereInput = {
@@ -12624,6 +12643,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedAgent?: UserCreateNestedOneWithoutLeadsAssignedInput
     createdBy: UserCreateNestedOneWithoutLeadsCreatedInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
@@ -12650,6 +12670,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     activities?: LeadActivityUncheckedCreateNestedManyWithoutLeadInput
     sale?: SaleUncheckedCreateNestedOneWithoutLeadInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutLeadInput
@@ -12672,6 +12693,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedAgent?: UserUpdateOneWithoutLeadsAssignedNestedInput
     createdBy?: UserUpdateOneRequiredWithoutLeadsCreatedNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
@@ -12698,6 +12720,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: LeadActivityUncheckedUpdateManyWithoutLeadNestedInput
     sale?: SaleUncheckedUpdateOneWithoutLeadNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutLeadNestedInput
@@ -12722,6 +12745,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type LeadUpdateManyMutationInput = {
@@ -12740,6 +12764,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type LeadUncheckedUpdateManyInput = {
@@ -12760,6 +12785,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type LeadActivityCreateInput = {
@@ -13530,6 +13556,7 @@ export namespace Prisma {
     disqualifiedReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type LeadMaxOrderByAggregateInput = {
@@ -13550,6 +13577,7 @@ export namespace Prisma {
     disqualifiedReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type LeadMinOrderByAggregateInput = {
@@ -13570,6 +13598,7 @@ export namespace Prisma {
     disqualifiedReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type EnumLeadSourceWithAggregatesFilter<$PrismaModel = never> = {
@@ -15112,6 +15141,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     createdBy: UserCreateNestedOneWithoutLeadsCreatedInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
     sale?: SaleCreateNestedOneWithoutLeadInput
@@ -15136,6 +15166,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     activities?: LeadActivityUncheckedCreateNestedManyWithoutLeadInput
     sale?: SaleUncheckedCreateNestedOneWithoutLeadInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutLeadInput
@@ -15168,6 +15199,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedAgent?: UserCreateNestedOneWithoutLeadsAssignedInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
     sale?: SaleCreateNestedOneWithoutLeadInput
@@ -15192,6 +15224,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     activities?: LeadActivityUncheckedCreateNestedManyWithoutLeadInput
     sale?: SaleUncheckedCreateNestedOneWithoutLeadInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutLeadInput
@@ -15431,6 +15464,7 @@ export namespace Prisma {
     disqualifiedReason?: StringNullableFilter<"Lead"> | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
   }
 
   export type LeadUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -16145,6 +16179,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedAgent?: UserCreateNestedOneWithoutLeadsAssignedInput
     createdBy: UserCreateNestedOneWithoutLeadsCreatedInput
     sale?: SaleCreateNestedOneWithoutLeadInput
@@ -16170,6 +16205,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sale?: SaleUncheckedCreateNestedOneWithoutLeadInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutLeadInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutLeadInput
@@ -16252,6 +16288,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedAgent?: UserUpdateOneWithoutLeadsAssignedNestedInput
     createdBy?: UserUpdateOneRequiredWithoutLeadsCreatedNestedInput
     sale?: SaleUpdateOneWithoutLeadNestedInput
@@ -16277,6 +16314,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sale?: SaleUncheckedUpdateOneWithoutLeadNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutLeadNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutLeadNestedInput
@@ -16349,6 +16387,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedAgent?: UserCreateNestedOneWithoutLeadsAssignedInput
     createdBy: UserCreateNestedOneWithoutLeadsCreatedInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
@@ -16374,6 +16413,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     activities?: LeadActivityUncheckedCreateNestedManyWithoutLeadInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutLeadInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutLeadInput
@@ -16481,6 +16521,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedAgent?: UserUpdateOneWithoutLeadsAssignedNestedInput
     createdBy?: UserUpdateOneRequiredWithoutLeadsCreatedNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
@@ -16506,6 +16547,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: LeadActivityUncheckedUpdateManyWithoutLeadNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutLeadNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutLeadNestedInput
@@ -16826,6 +16868,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedAgent?: UserCreateNestedOneWithoutLeadsAssignedInput
     createdBy: UserCreateNestedOneWithoutLeadsCreatedInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
@@ -16851,6 +16894,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     activities?: LeadActivityUncheckedCreateNestedManyWithoutLeadInput
     sale?: SaleUncheckedCreateNestedOneWithoutLeadInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutLeadInput
@@ -16939,6 +16983,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedAgent?: UserUpdateOneWithoutLeadsAssignedNestedInput
     createdBy?: UserUpdateOneRequiredWithoutLeadsCreatedNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
@@ -16964,6 +17009,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: LeadActivityUncheckedUpdateManyWithoutLeadNestedInput
     sale?: SaleUncheckedUpdateOneWithoutLeadNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutLeadNestedInput
@@ -17030,6 +17076,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedAgent?: UserCreateNestedOneWithoutLeadsAssignedInput
     createdBy: UserCreateNestedOneWithoutLeadsCreatedInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
@@ -17055,6 +17102,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     activities?: LeadActivityUncheckedCreateNestedManyWithoutLeadInput
     sale?: SaleUncheckedCreateNestedOneWithoutLeadInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutLeadInput
@@ -17143,6 +17191,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedAgent?: UserUpdateOneWithoutLeadsAssignedNestedInput
     createdBy?: UserUpdateOneRequiredWithoutLeadsCreatedNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
@@ -17168,6 +17217,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: LeadActivityUncheckedUpdateManyWithoutLeadNestedInput
     sale?: SaleUncheckedUpdateOneWithoutLeadNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutLeadNestedInput
@@ -17190,6 +17240,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type LeadCreateManyCreatedByInput = {
@@ -17209,6 +17260,7 @@ export namespace Prisma {
     disqualifiedReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type LeadActivityCreateManyAgentInput = {
@@ -17289,6 +17341,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: UserUpdateOneRequiredWithoutLeadsCreatedNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
     sale?: SaleUpdateOneWithoutLeadNestedInput
@@ -17313,6 +17366,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: LeadActivityUncheckedUpdateManyWithoutLeadNestedInput
     sale?: SaleUncheckedUpdateOneWithoutLeadNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutLeadNestedInput
@@ -17336,6 +17390,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type LeadUpdateWithoutCreatedByInput = {
@@ -17354,6 +17409,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedAgent?: UserUpdateOneWithoutLeadsAssignedNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
     sale?: SaleUpdateOneWithoutLeadNestedInput
@@ -17378,6 +17434,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: LeadActivityUncheckedUpdateManyWithoutLeadNestedInput
     sale?: SaleUncheckedUpdateOneWithoutLeadNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutLeadNestedInput
@@ -17401,6 +17458,7 @@ export namespace Prisma {
     disqualifiedReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type LeadActivityUpdateWithoutAgentInput = {

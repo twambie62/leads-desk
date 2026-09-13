@@ -158,8 +158,9 @@ model Lead {
   qualificationNote  String?
   disqualifiedReason String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   // relations
   activities    LeadActivity[]
@@ -171,6 +172,7 @@ model Lead {
   @@index([source])
   @@index([assignedAgentId])
   @@index([createdAt])
+  @@index([deletedAt])
 }
 
 // Section 6: Follow-up / Activities
