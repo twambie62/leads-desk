@@ -15,9 +15,15 @@ import { createLeadAction, type CreateLeadState } from "@/lib/actions/leads";
 
 const initialState: CreateLeadState = {};
 
-export function AddLeadDialog({ agents }: { agents: { id: string; name: string }[] }) {
+export function AddLeadDialog({
+                                agents, lockedAgentId,
+                              }: {
+  agents: { id: string; name: string }[];
+  lockedAgentId?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [state, formAction, isPending] = useActionState(createLeadAction, initialState);
+  const [assignedAgentId, setAssignedAgentId] = useState(lockedAgentId ?? "");
 
   useEffect(() => {
     if (state.success) setOpen(false);
@@ -79,15 +85,20 @@ export function AddLeadDialog({ agents }: { agents: { id: string; name: string }
             </Select>
           </div>
           <div>
-            <Label>Assign To</Label>
-            <Select name="assignedAgentId">
-              <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
-              <SelectContent>
-                {agents.map((a) => (
-                  <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {lockedAgentId ? (
+              <input type="hidden" name="assignedAgentId" value={lockedAgentId} />
+            ) : (
+              <div>
+                <Label>Assign To</Label>
+                <input type="hidden" name="assignedAgentId" value={assignedAgentId} />
+                <Select value={assignedAgentId} onValueChange={setAssignedAgentId}>
+                  <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                  <SelectContent>
+                    {agents.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           {state.error && (

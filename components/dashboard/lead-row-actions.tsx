@@ -26,11 +26,13 @@ type Lead = {
 };
 
 export function LeadRowActions({
-                                 lead, agents, onChanged,
+                                 lead, agents, onChanged, canDelete = true, lockedAgentId,
                                }: {
   lead: Lead;
   agents: { id: string; name: string }[];
   onChanged?: () => void;
+  canDelete?: boolean;
+  lockedAgentId?: string;
 }) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -84,14 +86,10 @@ export function LeadRowActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <EditLeadDialog open={editOpen} onOpenChange={setEditOpen} lead={lead} agents={agents} />
-      <DeleteLeadDialog
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        leadId={lead.id}
-        leadName={lead.leadName}
-        onDeleted={onChanged}
-      />
+      <EditLeadDialog open={editOpen} onOpenChange={setEditOpen} lead={lead} agents={agents} lockedAgentId={lockedAgentId} />
+      {canDelete && (
+        <DeleteLeadDialog open={deleteOpen} onOpenChange={setDeleteOpen} leadId={lead.id} leadName={lead.leadName} onDeleted={onChanged} />
+      )}
     </>
   );
 }

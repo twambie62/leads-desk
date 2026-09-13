@@ -42,11 +42,15 @@ type LeadRow = {
 type PaginatedResponse = { leads: LeadRow[]; totalPages: number; page: number };
 
 export function LeadsTable({
-                             initialData, agents,
+                             initialData, agents, canDelete = true, lockedAgentId,
                            }: {
   initialData: PaginatedResponse;
   agents: { id: string; name: string }[];
+  canDelete?: boolean;
+  lockedAgentId?: string;
 }) {
+
+
   const [data, setData] = useState(initialData);
   const [isPending, startTransition] = useTransition();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -78,26 +82,24 @@ export function LeadsTable({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>All Leads</CardTitle>
-        {selectedIds.length > 0 && (
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setBulkDeleteOpen(true)}
-            className="flex items-center gap-1"
-          >
+        <CardTitle>{canDelete ? "All Leads" : "My Leads"}</CardTitle>
+        {canDelete && selectedIds.length > 0 && (
+          <Button variant="destructive" size="sm" onClick={() => setBulkDeleteOpen(true)} className="flex items-center gap-1">
             <Trash2 className="h-4 w-4" /> Delete {selectedIds.length} selected
           </Button>
         )}
       </CardHeader>
       <CardContent className={isPending ? "opacity-60 transition-opacity" : "transition-opacity"}>
         <div className="overflow-hidden rounded-lg border border-border/100">
+
           <Table>
-            <TableHeader className={"px-2 text-left align-middle font-medium whitespace-nowrap border-b border-border/40 ..."}>
+            <TableHeader className="...">
               <TableRow className="bg-muted/90 hover:bg-muted/50 border-b border-border/99 transition-colors">
-                <TableHead className="w-10">
-                  <Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" />
-                </TableHead>
+                {canDelete && (
+                  <TableHead className="w-10">
+                    <Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" />
+                  </TableHead>
+                )}
                 <TableHead>Lead Name</TableHead>
                 <TableHead>Business</TableHead>
                 <TableHead>Phone</TableHead>
@@ -111,13 +113,11 @@ export function LeadsTable({
             <TableBody>
               {data.leads.map((lead) => (
                 <TableRow key={lead.id} className="hover:bg-[rgba(57,134,249,0.09)] data-[state=selected]:bg-muted border-b border-border/99 transition-colors">
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedIds.includes(lead.id)}
-                      onCheckedChange={() => toggleOne(lead.id)}
-                      aria-label={`Select ${lead.leadName}`}
-                    />
-                  </TableCell>
+                  {canDelete && (
+                    <TableCell>
+                      <Checkbox checked={selectedIds.includes(lead.id)} onCheckedChange={() => toggleOne(lead.id)} aria-label={`Select ${lead.leadName}`} />
+                    </TableCell>
+                  )}
                   <TableCell className="font-medium">{lead.leadName}</TableCell>
                   <TableCell className="text-muted-foreground">{lead.businessName ?? "—"}</TableCell>
                   <TableCell>{lead.phoneNumber}</TableCell>
@@ -128,11 +128,9 @@ export function LeadsTable({
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{lead.assignedAgent?.name ?? "Unassigned"}</TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {new Date(lead.createdAt).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">{new Date(lead.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <LeadRowActions lead={lead} agents={agents} onChanged={refetchCurrentPage} />
+                    <LeadRowActions lead={lead} agents={agents} onChanged={refetchCurrentPage} canDelete={canDelete} lockedAgentId={lockedAgentId} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -175,15 +173,11 @@ export function LeadsTable({
         </Pagination>
       </CardContent>
 
-      <BulkDeleteDialog
-        open={bulkDeleteOpen}
-        onOpenChange={setBulkDeleteOpen}
-        leadIds={selectedIds}
-        onDeleted={() => {
-          setSelectedIds([]);
-          refetchCurrentPage();
-        }}
-      />
+      {canDelete && (
+        <BulkDeleteDialog open={bulkDeleteOpen} onOpenChange={setBulkDeleteOpen} leadIds={selectedIds} onDeleted={() => { setSelectedIds([]); refetchCurrentPage(); }} />
+      )}
     </Card>
+
+
   );
 }

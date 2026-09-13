@@ -4,26 +4,27 @@ import { LeadStatus, LeadSource } from "@/src/generated/prisma";
 import {
   startOfWeek, subWeeks, startOfMonth, subMonths,
   startOfDay, subDays, format, eachDayOfInterval,
-  eachWeekOfInterval, eachMonthOfInterval,
+  eachWeekOfInterval, eachMonthOfInterval, endOfDay,
 } from "date-fns";
 
 const PIPELINE_STATUSES: LeadStatus[] = [
   "NEW_LEAD", "CONTACTED", "QUALIFIED", "MEETING_SCHEDULED",
 ];
 
-export async function getStatsCardsData() {
+export async function getStatsCardsData(agentId?: string) {
   const now = new Date();
   const weekStart = startOfWeek(now);
   const lastWeekStart = subWeeks(weekStart, 1);
   const monthStart = startOfMonth(now);
   const lastMonthStart = subMonths(monthStart, 1);
+  const scope = agentId ? { assignedAgentId: agentId } : {};
 
   const [allTime, thisWeek, lastWeek, thisMonth, lastMonth] = await Promise.all([
-    prisma.lead.groupBy({ by: ["status"], _count: true }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null , createdAt: { gte: weekStart } } }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null ,createdAt: { gte: lastWeekStart, lt: weekStart } } }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null ,createdAt: { gte: monthStart } } }),
-    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null ,createdAt: { gte: lastMonthStart, lt: monthStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null, ...scope } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null, ...scope, createdAt: { gte: weekStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null, ...scope, createdAt: { gte: lastWeekStart, lt: weekStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null, ...scope, createdAt: { gte: monthStart } } }),
+    prisma.lead.groupBy({ by: ["status"], _count: true, where: { deletedAt: null, ...scope, createdAt: { gte: lastMonthStart, lt: monthStart } } }),
   ]);
 
   const toMap = (rows: { status: LeadStatus; _count: number }[]) =>
@@ -60,10 +61,12 @@ const ALL_STATUSES: LeadStatus[] = [
   "DISQUALIFIED", "LOST", "NO_RESPONSE",
 ];
 
-export async function getStatusChartData() {
+export async function getStatusChartData(agentId?: string) {
+
+  const scope = agentId ? { assignedAgentId: agentId } : {};
   const rangeStart = subMonths(startOfDay(new Date()), 12);
   const leads = await prisma.lead.findMany({
-    where: {deletedAt: null , createdAt: { gte: rangeStart } },
+    where: { deletedAt: null, ...scope, createdAt: { gte: rangeStart } },
     select: { createdAt: true, status: true },
   });
 
@@ -113,47 +116,33 @@ export async function getSourceChartData() {
 
 const PAGE_SIZE = 10;
 
-export async function getPaginatedLeads(page: number) {
+export async function getPaginatedLeads(page: number, agentId?: string) {
   const skip = (page - 1) * PAGE_SIZE;
+  const scope = agentId ? { assignedAgentId: agentId } : {};
 
   const [leads, totalCount] = await Promise.all([
     prisma.lead.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, ...scope },
       orderBy: { createdAt: "desc" },
       skip,
       take: PAGE_SIZE,
-      include: {
-        assignedAgent: { select: { id: true, name: true } },
-      },
+      include: { assignedAgent: { select: { id: true, name: true } } },
     }),
-    prisma.lead.count({
-      where: { deletedAt: null },
-    }),
+    prisma.lead.count({ where: { deletedAt: null, ...scope } }),
   ]);
 
-  return {
-    leads,
-    totalCount,
-    totalPages: Math.max(1, Math.ceil(totalCount / PAGE_SIZE)),
-    page,
-  };
+  return { leads, totalCount, totalPages: Math.max(1, Math.ceil(totalCount / PAGE_SIZE)), page };
 }
 
-export async function getLeadById(id: string) {
+export async function getLeadById(id: string, agentId?: string) {
+  const scope = agentId ? { assignedAgentId: agentId } : {};
   return prisma.lead.findFirst({
-    where: { id, deletedAt: null },
+    where: { id, deletedAt: null, ...scope },
     include: {
       assignedAgent: { select: { id: true, name: true, email: true } },
       createdBy: { select: { name: true } },
-      activities: {
-        orderBy: { activityDate: "desc" },
-        include: { agent: { select: { name: true } } },
-      },
-      auditLogs: {
-        orderBy: { createdAt: "desc" },
-        take: 20,
-        include: { user: { select: { name: true } } },
-      },
+      activities: { orderBy: { activityDate: "desc" }, include: { agent: { select: { name: true } } } },
+      auditLogs: { orderBy: { createdAt: "desc" }, take: 20, include: { user: { select: { name: true } } } },
     },
   });
 }
@@ -164,4 +153,38 @@ export async function getSalesAgents() {
     select: { id: true, name: true, email: true },
     orderBy: { name: "asc" },
   });
+}
+
+
+const NON_ACTIONABLE_STATUSES: LeadStatus[] = ["DISQUALIFIED", "LOST", "NO_RESPONSE"];
+
+export async function getTodaysFollowUps(agentId?: string) {
+  const cutoff = endOfDay(new Date());
+
+  const activities = await prisma.leadActivity.findMany({
+    where: {
+      nextFollowUpDate: { lte: cutoff, not: null },
+      lead: {
+        deletedAt: null,
+        status: { notIn: NON_ACTIONABLE_STATUSES },
+        ...(agentId ? { assignedAgentId: agentId } : {}),
+      },
+    },
+    orderBy: { nextFollowUpDate: "asc" },
+    include: {
+      lead: {
+        select: { id: true, leadName: true, phoneNumber: true, whatsappNumber: true, email: true, status: true },
+      },
+    },
+  });
+
+  // Keep only the most relevant (soonest) follow-up per lead
+  const seen = new Set<string>();
+  const result = [];
+  for (const activity of activities) {
+    if (seen.has(activity.leadId)) continue;
+    seen.add(activity.leadId);
+    result.push(activity);
+  }
+  return result;
 }

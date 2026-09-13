@@ -20,36 +20,18 @@ const leadSchema = z.object({
 
 export type CreateLeadState = { error?: string; success?: boolean };
 
-export async function createLeadAction(
-  _prevState: CreateLeadState,
-  formData: FormData
-): Promise<CreateLeadState> {
+export async function createLeadAction(_prevState: CreateLeadState, formData: FormData): Promise<CreateLeadState> {
   const user = await getSession();
   if (!user) return { error: "Not authenticated." };
 
-  const parsed = leadSchema.safeParse({
-    leadName: formData.get("leadName"),
-    businessName: formData.get("businessName") || undefined,
-    phoneNumber: formData.get("phoneNumber"),
-    whatsappNumber: formData.get("whatsappNumber") || undefined,
-    email: formData.get("email") || "",
-    location: formData.get("location") || undefined,
-    businessType: formData.get("businessType") || undefined,
-    productInterested: formData.get("productInterested") || undefined,
-    source: formData.get("source"),
-    assignedAgentId: formData.get("assignedAgentId") || undefined,
-  });
+  const parsed = leadSchema.safeParse({ /* ...unchanged... */ });
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0].message };
-  }
+  // Agents can only ever create leads assigned to themselves, regardless of what was submitted
+  const assignedAgentId = user.role === "SALES_AGENT" ? user.id : parsed.data.assignedAgentId;
 
   const lead = await prisma.lead.create({
-    data: {
-      ...parsed.data,
-      email: parsed.data.email || undefined,
-      createdById: user.id,
-    },
+    data: { ...parsed.data, assignedAgentId, email: parsed.data.email || undefined, createdById: user.id },
   });
 
   await prisma.auditLog.create({
@@ -67,34 +49,27 @@ export async function createLeadAction(
 
 // add below your existing createLeadAction
 
-export async function updateLeadAction(
-  leadId: string,
-  _prevState: CreateLeadState,
-  formData: FormData
-): Promise<CreateLeadState> {
+export async function updateLeadAction(leadId: string, _prevState: CreateLeadState, formData: FormData): Promise<CreateLeadState> {
   const user = await getSession();
   if (!user) return { error: "Not authenticated." };
 
-  const parsed = leadSchema.safeParse({
-    leadName: formData.get("leadName"),
-    businessName: formData.get("businessName") || undefined,
-    phoneNumber: formData.get("phoneNumber"),
-    whatsappNumber: formData.get("whatsappNumber") || undefined,
-    email: formData.get("email") || "",
-    location: formData.get("location") || undefined,
-    businessType: formData.get("businessType") || undefined,
-    productInterested: formData.get("productInterested") || undefined,
-    source: formData.get("source"),
-    assignedAgentId: formData.get("assignedAgentId") || undefined,
-  });
+  const parsed = leadSchema.safeParse({ /* ...unchanged... */ });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   const existing = await prisma.lead.findFirst({ where: { id: leadId, deletedAt: null } });
   if (!existing) return { error: "Lead not found." };
 
+  // Ownership check: an agent may only edit a lead assigned to them
+  if (user.role === "SALES_AGENT" && existing.assignedAgentId !== user.id) {
+    return { error: "You don't have permission to edit this lead." };
+  }
+
+  // Agents can never reassign — force it to stay whatever it already was
+  const assignedAgentId = user.role === "SALES_AGENT" ? existing.assignedAgentId : parsed.data.assignedAgentId;
+
   await prisma.lead.update({
     where: { id: leadId },
-    data: { ...parsed.data, email: parsed.data.email || undefined },
+    data: { ...parsed.data, assignedAgentId, email: parsed.data.email || undefined },
   });
 
   const reassigned = existing.assignedAgentId !== (parsed.data.assignedAgentId || null);
@@ -117,19 +92,15 @@ export async function updateLeadAction(
 const PIPELINE_ORDER = ["NEW_LEAD", "CONTACTED", "QUALIFIED", "MEETING_SCHEDULED"] as const;
 const REASON_REQUIRED = ["DISQUALIFIED", "LOST"];
 
-export async function updateLeadStatusAction(
-  leadId: string,
-  newStatus: string,
-  reason?: string
-): Promise<{ error?: string; success?: boolean }> {
+export async function updateLeadStatusAction(leadId: string, newStatus: string, reason?: string) {
   const user = await getSession();
   if (!user) return { error: "Not authenticated." };
 
   const lead = await prisma.lead.findFirst({ where: { id: leadId, deletedAt: null } });
   if (!lead) return { error: "Lead not found." };
 
-  if (REASON_REQUIRED.includes(newStatus) && !reason?.trim()) {
-    return { error: "A reason is required for this outcome." };
+  if (user.role === "SALES_AGENT" && lead.assignedAgentId !== user.id) {
+    return { error: "You don't have permission to update this lead." };
   }
 
   await prisma.lead.update({

@@ -28,21 +28,39 @@ export default async function AdminDashboardPage({
   ]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    // <div className="flex min-h-screen flex-col">
+    //   <DashboardHeader userName={user?.name ?? "there"} agents={agents} />
+    //   <div className="flex flex-1 flex-col gap-6 p-6">
+    //     <StatsCards data={stats} />
+    //
+    //     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    //       <div className="lg:col-span-2">
+    //         <StatusChart {...statusChart} />
+    //       </div>
+    //       <div>
+    //         <SourceChart data={sourceChart} />
+    //       </div>
+    //     </div>
+    //
+    //     <LeadsTable agents={agents} initialData={initialLeads} />
+    //   </div>
+    // </div>
+    <div className="flex min-h-screen min-w-0 flex-1 flex-col">
       <DashboardHeader userName={user?.name ?? "there"} agents={agents} />
-      <div className="flex flex-1 flex-col gap-6 p-6">
+      <div className="flex flex-1 flex-col gap-6 p-6 min-w-0 overflow-x-hidden">
         <StatsCards data={stats} />
-
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 min-w-0">
+          <div className="lg:col-span-2 min-w-0">
             <StatusChart {...statusChart} />
           </div>
-          <div>
-            <SourceChart data={sourceChart} />
+          <div className="min-w-0">
+            <SourceChart data={sourceChart} /> {/* or TodaysFollowUps on agent */}
           </div>
         </div>
+        <div className="w-full min-w-0">
+          <LeadsTable agents={agents} initialData={initialLeads} />
 
-        <LeadsTable agents={agents} initialData={initialLeads} />
+        </div>
       </div>
     </div>
   );

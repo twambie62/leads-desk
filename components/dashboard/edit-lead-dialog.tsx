@@ -25,12 +25,13 @@ type EditableLead = {
 };
 
 export function EditLeadDialog({
-                                 open, onOpenChange, lead, agents,
+                                 open, onOpenChange, lead, agents, lockedAgentId
                                }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   lead: EditableLead;
   agents: { id: string; name: string }[];
+  lockedAgentId: string;
 }) {
   const boundAction = updateLeadAction.bind(null, lead.id);
   const [state, formAction, isPending] = useActionState(boundAction, initialState);
@@ -95,15 +96,20 @@ export function EditLeadDialog({
             </Select>
           </div>
           <div>
-            <Label>Assign To</Label>
-            <Select value={assignedAgentId} onValueChange={setAssignedAgentId}>
-              <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
-              <SelectContent>
-                {agents.map((a) => (
-                  <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {lockedAgentId ? (
+              <input type="hidden" name="assignedAgentId" value={lockedAgentId} />
+            ) : (
+              <div>
+                <Label>Assign To</Label>
+                <input type="hidden" name="assignedAgentId" value={assignedAgentId} />
+                <Select value={assignedAgentId} onValueChange={setAssignedAgentId}>
+                  <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                  <SelectContent>
+                    {agents.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           {state.error && <p className="col-span-2 text-sm text-red-600">{state.error}</p>}

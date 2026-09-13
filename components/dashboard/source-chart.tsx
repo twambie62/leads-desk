@@ -27,13 +27,29 @@ export function SourceChart({ data }: { data: { source: string; count: number; p
       <CardHeader>
         <CardTitle>Leads by Source</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="mx-auto w-[300px] h-[320px] max-h-[320px]">
+
+      <CardContent className="flex flex-1 items-center justify-center">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square h-[280px] w-full max-w-[320px] sm:h-[320px]"
+        >
           <PieChart>
-            <ChartTooltip content={<ChartTooltipContent nameKey="source" />} />
-            <Pie data={data} dataKey="count" nameKey="source" innerRadius={60} strokeWidth={4}>
+            <ChartTooltip
+              content={<ChartTooltipContent nameKey="source" />}
+            />
+
+            <Pie
+              data={data}
+              dataKey="count"
+              nameKey="source"
+              innerRadius={60}
+              strokeWidth={4}
+            >
               {data.map((entry, i) => (
-                <Cell key={entry.source} fill={COLORS[i % COLORS.length]} />
+                <Cell
+                  key={entry.source}
+                  fill={COLORS[i % COLORS.length]}
+                />
               ))}
             </Pie>
           </PieChart>
