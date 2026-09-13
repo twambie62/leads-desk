@@ -4,6 +4,7 @@ import { LeadsTable } from "@/components/dashboard/leads-table";
 import { StatusChart } from "@/components/dashboard/status-chart";
 import {
   getStatsCardsData, getStatusChartData, getSourceChartData, getSalesAgents,
+  getPaginatedLeads,
 } from "@/lib/queries/dashboard";
 import {DashboardHeader} from "@/components/dashboard/ dashboard-header";
 import {getSession} from "@/lib/session";
@@ -17,11 +18,13 @@ export default async function AdminDashboardPage({
   const currentPage = Number(page) || 1;
   const user = await getSession();
 
-  const [stats, statusChart, sourceChart, agents] = await Promise.all([
+  const [stats, statusChart, sourceChart, agents, initialLeads] = await Promise.all([
     getStatsCardsData(),
     getStatusChartData(),
     getSourceChartData(),
     getSalesAgents(),
+    getPaginatedLeads(1)
+
   ]);
 
   return (
@@ -39,7 +42,7 @@ export default async function AdminDashboardPage({
           </div>
         </div>
 
-        <LeadsTable page={currentPage} />
+        <LeadsTable initialData={initialLeads} />
       </div>
     </div>
   );

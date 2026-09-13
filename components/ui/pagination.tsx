@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "cn"
-
+import { Slot } from "@radix-ui/react-slot";
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
 
@@ -39,6 +39,7 @@ type PaginationLinkProps = {
   React.ComponentProps<"a">
 
 function PaginationLink({
+
   className,
   isActive,
   size = "icon",
