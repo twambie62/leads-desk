@@ -100,6 +100,22 @@
   --font-mono: var(--font-geist-mono);
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--muted)) inset;
+  -webkit-text-fill-color: hsl(var(--foreground));
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow:
+          0 0 0 1000px hsl(var(--muted)) inset,
+          0 0 0 3px hsl(var(--ring) / 0.5);
+  -webkit-text-fill-color: hsl(var(--foreground));
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));

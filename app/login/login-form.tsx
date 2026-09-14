@@ -24,7 +24,7 @@ export default function LoginForm() {
           required
           autoComplete="email"
           placeholder="you@company.com"
-          className="mt-2"
+          className="mt-2  h-10 shadow-none "
         />
       </div>
 
@@ -38,7 +38,7 @@ export default function LoginForm() {
             required
             autoComplete="current-password"
             placeholder="••••••••••"
-            className="pr-10"
+            className="pr-10 h-10 "
           />
           <button
             type="button"
@@ -58,7 +58,7 @@ export default function LoginForm() {
         </p>
       )}
 
-      <Button type="submit" disabled={isPending} className="w-full mt-6 h-10">
+      <Button type="submit" disabled={isPending} className="w-full mt-12 h-10.5">
         {isPending ? "Signing in..." : "Sign In"}
       </Button>
     </form>
