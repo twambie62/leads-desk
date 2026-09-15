@@ -23,7 +23,7 @@ export function TodaysFollowUps({followUps,}: { followUps: FollowUp[]; }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return (
-    <Card className="flex h-full min-h-0 flex-col">
+    <Card className="flex max-h-[442px] min-h-0 flex-col">
       <CardHeader className="shrink-0">
         <CardTitle>Today's Follow-ups</CardTitle>
       </CardHeader>
