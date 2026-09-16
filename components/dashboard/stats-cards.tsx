@@ -84,7 +84,7 @@ function Percentage({
   current: number;
   previous: number;
 }) {
-  if (previous === 0) {
+  if (previous === current) {
     return (
       <span className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
         0.00%
@@ -92,11 +92,18 @@ function Percentage({
     );
   }
 
-  const percentage = ((current - previous) / previous) * 100;
+  console.log(current + "  vs   " + previous)
+
+  const sign = ((current - previous) / previous) * 100;
+
+  const percentage = previous === 0
+    ? current * 10
+    : Math.abs(((current - previous) / previous) * 100);
+
 
   return (
     <span className="rounded-full border border-border px-[6.5px] py-0.5 text-[10px] text-foreground/72">
-      {percentage > 0 ? "+" : ""}
+      {sign > 0 ? "+" : "-"}
       {percentage.toFixed(1)}%
     </span>
   );

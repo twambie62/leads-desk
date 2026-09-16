@@ -2,5 +2,5 @@
 import { ComingSoon } from "@/components/dashboard/coming-soon";
 
 export default function SalesPage() {
-  return <ComingSoon title="Leads" />;
+  return <ComingSoon title="Sales" />;
 }
