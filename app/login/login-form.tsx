@@ -70,6 +70,14 @@ export default function LoginForm() {
         <p className="text-muted-foreground">
           Password: <span className="font-mono text-foreground select-all">Admin@2026</span>
         </p>
+
+        <p className="mt-3 font-medium text-foreground">Demo agent account</p>
+        <p className="mt-1 text-muted-foreground">
+          Email: <span className="font-mono text-foreground select-all">agent1@leadsdesk.com</span>
+        </p>
+        <p className="text-muted-foreground">
+          Password: <span className="font-mono text-foreground select-all">Agent@2026</span>
+        </p>
       </div>
     </form>
   );
