@@ -23,6 +23,7 @@ export default function LoginForm() {
           type="email"
           required
           autoComplete="email"
+          defaultValue="admin@leadsdesk.com"
           placeholder="you@company.com"
           className="mt-2  h-10 shadow-none "
         />
@@ -37,6 +38,7 @@ export default function LoginForm() {
             type={showPassword ? "text" : "password"}
             required
             autoComplete="current-password"
+          defaultValue="Admin@2026"
             placeholder="••••••••••"
             className="pr-10 h-10 "
           />
@@ -62,7 +64,7 @@ export default function LoginForm() {
         {isPending ? "Signing in..." : "Sign In"}
       </Button>
 
-      <div className="grid grid-cols-1 gap-3 pt-2 text-xs text-muted-foreground/70 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 pt-2 text-[13px] text-muted-foreground/70 sm:grid-cols-2">
         <div className="space-y-0.5">
           <p className="select-all">admin@leadsdesk.com</p>
           <p className="select-all">Admin@2026</p>
