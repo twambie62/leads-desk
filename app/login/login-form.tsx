@@ -62,22 +62,15 @@ export default function LoginForm() {
         {isPending ? "Signing in..." : "Sign In"}
       </Button>
 
-      <div className="rounded-md border border-dashed bg-muted/40 px-4 py-3 text-sm">
-        <p className="font-medium text-foreground">Demo admin account</p>
-        <p className="mt-1 text-muted-foreground">
-          Email: <span className="font-mono text-foreground select-all">admin@leadsdesk.com</span>
-        </p>
-        <p className="text-muted-foreground">
-          Password: <span className="font-mono text-foreground select-all">Admin@2026</span>
-        </p>
-
-        <p className="mt-3 font-medium text-foreground">Demo agent account</p>
-        <p className="mt-1 text-muted-foreground">
-          Email: <span className="font-mono text-foreground select-all">agent1@leadsdesk.com</span>
-        </p>
-        <p className="text-muted-foreground">
-          Password: <span className="font-mono text-foreground select-all">Agent@2026</span>
-        </p>
+      <div className="grid grid-cols-1 gap-3 pt-2 text-xs text-muted-foreground/70 sm:grid-cols-2">
+        <div className="space-y-0.5">
+          <p className="select-all">admin@leadsdesk.com</p>
+          <p className="select-all">Admin@2026</p>
+        </div>
+        <div className="space-y-0.5 sm:text-right">
+          <p className="select-all">agent1@leadsdesk.com</p>
+          <p className="select-all">Agent@2026</p>
+        </div>
       </div>
     </form>
   );
