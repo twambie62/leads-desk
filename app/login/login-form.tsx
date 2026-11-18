@@ -61,6 +61,16 @@ export default function LoginForm() {
       <Button type="submit" disabled={isPending} className="w-full mt-12 h-10.5">
         {isPending ? "Signing in..." : "Sign In"}
       </Button>
+
+      <div className="rounded-md border border-dashed bg-muted/40 px-4 py-3 text-sm">
+        <p className="font-medium text-foreground">Demo admin account</p>
+        <p className="mt-1 text-muted-foreground">
+          Email: <span className="font-mono text-foreground select-all">admin@leadsdesk.com</span>
+        </p>
+        <p className="text-muted-foreground">
+          Password: <span className="font-mono text-foreground select-all">Admin@2026</span>
+        </p>
+      </div>
     </form>
   );
 }
