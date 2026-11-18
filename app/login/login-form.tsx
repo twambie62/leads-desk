@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,7 +61,11 @@ export default function LoginForm() {
       )}
 
       <Button type="submit" disabled={isPending} className="w-full mt-12 h-10.5">
-        {isPending ? "Signing in..." : "Sign In"}
+        {isPending ? (
+          <Loader2 className="h-4 w-4 animate-spin" aria-label="Signing in" />
+        ) : (
+          "Sign In"
+        )}
       </Button>
 
       <div className="grid grid-cols-1 gap-3 pt-2 text-[13px] text-muted-foreground/70 sm:grid-cols-2">
