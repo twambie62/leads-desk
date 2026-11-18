@@ -68,14 +68,14 @@ export default function LoginForm() {
         )}
       </Button>
 
-      <div className="grid grid-cols-1 gap-3 pt-2 text-[13px] text-muted-foreground/70 sm:grid-cols-2">
-        <div className="space-y-0.5">
-          <p className="select-all">admin@leadsdesk.com</p>
-          <p className="select-all">Admin@2026</p>
+      <div className="grid grid-cols-2 gap-3 pt-2 text-[14px] text-muted-foreground/70 sm:text-[13px]">
+        <div className="min-w-0 space-y-0.5">
+          <p className="select-all break-all">admin@leadsdesk.com</p>
+          <p className="select-all break-all">Admin@2026</p>
         </div>
-        <div className="space-y-0.5 sm:text-right">
-          <p className="select-all">agent1@leadsdesk.com</p>
-          <p className="select-all">Agent@2026</p>
+        <div className="min-w-0 space-y-0.5 text-right">
+          <p className="select-all break-all">agent1@leadsdesk.com</p>
+          <p className="select-all break-all">Agent@2026</p>
         </div>
       </div>
     </form>
